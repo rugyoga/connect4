@@ -1,9 +1,11 @@
+#!/bin/ruby
+
 MAX=1000
 class Connect4
   ROWS=6
   COLS=7
-  EMPTY='*'
-  FIRST='x'
+  EMPTY=' '
+  FIRST='X'
   SECOND='O'
 
   def initialize
@@ -202,6 +204,20 @@ class AlphaBeta
     values.first[1]
   end
 end
+
+class Human
+  def initialize( game )
+    @game = game
+  end
+
+  def pick
+    moves = @game.moves
+    printf( "Move (%s): ", moves.join(',') )
+    candidate = STDIN.readline.chomp.to_i
+    return candidate if moves.include? candidate
+    pick
+  end
+end
   
 depth=(ARGV[0] || "4").to_i
 connect4 = Connect4.new
@@ -210,7 +226,8 @@ connect4 = Connect4.new
 player1 = AlphaBeta.new( connect4, depth )
 #player2 = Random.new( connect4 )
 #player2 = MinMax.new( connect4, depth )
-player2 = AlphaBeta.new( connect4, depth )
+#player2 = AlphaBeta.new( connect4, depth )
+player2 = Human.new( connect4 )
 until (game_won = connect4.won) || connect4.drawn do
   p = connect4.to_move
   c = (p ? player1 : player2).pick
